@@ -1,0 +1,12 @@
+
+echo "Script assumes current working directory is '/usr/src/xlinedevkit_arm/driver'"
+sudo chmod -R 777 ../*
+sudo cp ../lib/fflyusb_arm.so /usr/lib/.
+sudo ln -s /usr/lib/fflyusb_arm.so /usr/lib/libfflyusb_arm.so
+sudo cp ../lib/libxlinecapi_arm.so /usr/lib/.
+sudo mkdir /lib/modules/$(uname -r)/extra
+sudo cp xline.ko /lib/modules/$(uname -r)/extra/.
+sudo cp 50-udev.rules /etc/udev/rules.d/.
+sudo /etc/init.d/udev restart
+sudo depmod
+sudo modprobe xline

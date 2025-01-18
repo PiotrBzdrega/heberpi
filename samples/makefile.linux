@@ -1,0 +1,79 @@
+CC=g++
+
+CFLAGS=-pedantic -Wall -O2 -DX10_LINUX_BUILD
+LFLAGS=
+
+X10INC=-I../include
+X10LIB=-l fflyusb_arm ../lib/unlockio_arm.o obj/authenticate_linux.o -pthread
+
+
+all : clean binaries
+
+
+binaries : make_bins
+
+
+clean : FORCE
+	rm -f obj/authenticatedemo.o
+	rm -f obj/authenticate_linux.o
+	rm -f obj/cctalkdemo.o
+	rm -f obj/eepromdemo.o
+	rm -f obj/fadedemo.o
+	rm -f obj/inpmuxdemo.o
+	rm -f obj/iodemo.o
+	rm -f obj/paralleldemo.o
+	rm -f obj/randomdemo.o
+	rm -f obj/reels.o
+	rm -f obj/serialdemo.o
+	rm -f obj/spidemo.o
+	rm -f obj/sramdemo.o
+	rm -f obj/timedemo.o
+	rm -f authenticatedemo
+	rm -f cctalkdemo
+	rm -f eepromdemo
+	rm -f fadedemo
+	rm -f inpmuxdemo
+	rm -f iodemo
+	rm -f paralleldemo
+	rm -f randomdemo
+	rm -f reels
+	rm -f serialdemo
+	rm -f spidemo
+	rm -f sramdemo
+	rm -f timedemo
+
+
+make_bins : make_objs
+	$(CC) $(LFLAGS) -o authenticatedemo obj/authenticatedemo.o	$(X10LIB) 
+	$(CC) $(LFLAGS) -o cctalkdemo obj/cctalkdemo.o			$(X10LIB) 
+	$(CC) $(LFLAGS) -o eepromdemo obj/eepromdemo.o			$(X10LIB) 
+	$(CC) $(LFLAGS) -o fadedemo obj/fadedemo.o			$(X10LIB) 
+	$(CC) $(LFLAGS) -o inpmuxdemo obj/inpmuxdemo.o			$(X10LIB) 
+	$(CC) $(LFLAGS) -o iodemo obj/iodemo.o				$(X10LIB) 
+	$(CC) $(LFLAGS) -o paralleldemo obj/paralleldemo.o		$(X10LIB) 
+	$(CC) $(LFLAGS) -o randomdemo obj/randomdemo.o			$(X10LIB) 
+	$(CC) $(LFLAGS) -o reels obj/reels.o				$(X10LIB) 
+	$(CC) $(LFLAGS) -o serialdemo obj/serialdemo.o			$(X10LIB) 
+	$(CC) $(LFLAGS) -o spidemo obj/spidemo.o			$(X10LIB) 
+	$(CC) $(LFLAGS) -o sramdemo obj/sramdemo.o			$(X10LIB) 
+	$(CC) $(LFLAGS) -o timedemo obj/timedemo.o			$(X10LIB) 
+
+
+make_objs : FORCE
+	$(CC) $(CFLAGS) $(X10INC) -c authenticate_linux.cpp -o obj/authenticate_linux.o
+	$(CC) $(CFLAGS) $(X10INC) -c authenticatedemo.cpp -o obj/authenticatedemo.o
+	$(CC) $(CFLAGS) $(X10INC) -c cctalkdemo.cpp -o obj/cctalkdemo.o
+	$(CC) $(CFLAGS) $(X10INC) -c eepromdemo.cpp -o obj/eepromdemo.o
+	$(CC) $(CFLAGS) $(X10INC) -c fadedemo.cpp -o obj/fadedemo.o
+	$(CC) $(CFLAGS) $(X10INC) -c inpmuxdemo.cpp -o obj/inpmuxdemo.o
+	$(CC) $(CFLAGS) $(X10INC) -c iodemo.cpp -o obj/iodemo.o
+	$(CC) $(CFLAGS) $(X10INC) -c paralleldemo.cpp -o obj/paralleldemo.o
+	$(CC) $(CFLAGS) $(X10INC) -c randomdemo.cpp -o obj/randomdemo.o
+	$(CC) $(CFLAGS) $(X10INC) -c reels.cpp -o obj/reels.o
+	$(CC) $(CFLAGS) $(X10INC) -c serialdemo.cpp -o obj/serialdemo.o
+	$(CC) $(CFLAGS) $(X10INC) -c spidemo.cpp -o obj/spidemo.o
+	$(CC) $(CFLAGS) $(X10INC) -c sramdemo.cpp -o obj/sramdemo.o
+	$(CC) $(CFLAGS) $(X10INC) -c timedemo.cpp -o obj/timedemo.o
+	
+FORCE:
+

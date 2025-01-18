@@ -1,0 +1,1 @@
+KERNEL=="Xline_?",SUBSYSTEM=="Xline",MODE="666" 
