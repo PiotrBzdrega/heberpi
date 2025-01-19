@@ -87,7 +87,7 @@
 MODULE_LICENSE( "GPL" );
 MODULE_DESCRIPTION( "Heber X-line Kernel Driver" );
 MODULE_AUTHOR( "Heber Limited <http://www.heber.co.uk>" );
-MODULE_SUPPORTED_DEVICE( "X-line" );
+// MODULE_SUPPORTED_DEVICE( "X-line" ); //deprecated
 
 #define FULL_SPEED								0
 #define HIGH_SPEED								1
@@ -259,7 +259,7 @@ the class device api
 	static struct class *X10_class = NULL;
 	static inline void create_X10_sysfs_class( void )
 	{
-	  	X10_class = class_create( THIS_MODULE, "Xline" );        //let ths sysfs export nasty stuff like pipe sizes
+	  	X10_class = class_create( "Xline" );        //let ths sysfs export nasty stuff like pipe sizes
 	}
 
 	static inline void destroy_X10_sysfs_class( void )
@@ -1021,28 +1021,28 @@ static int handle_vpipe_request( struct x10i_instance *instance, unsigned char c
 
 	static int proc_dump_usb_pipes_open(struct inode *inode, struct file *file)
 	{
-		return single_open(file, proc_dump_usb_pipes_show, PDE_DATA(inode));
+		return single_open(file, proc_dump_usb_pipes_show, pde_data(inode));
 	}
 
 	static int procmem_proc_open(struct inode *inode, struct file *file)
 	{
-		return single_open(file, procmem_proc_show, PDE_DATA(inode));
+		return single_open(file, procmem_proc_show, pde_data(inode));
 	}
 
 	/* report device minor numbers */
-	static const struct file_operations procmem_proc_fops = {
-		.open		= procmem_proc_open,
-		.read		= seq_read,
-		.llseek		= seq_lseek,
-		.release	= seq_release,
+	static const struct proc_ops procmem_proc_fops = {
+		.proc_open		= procmem_proc_open,
+		.proc_read		= seq_read,
+		.proc_lseek		= seq_lseek,
+		.proc_release	= seq_release,
 	};
 
 	/* report virtual/physical pipe numbers */
-	static const struct file_operations proc_dump_usb_pipes_fops = {
-		.open		= proc_dump_usb_pipes_open,
-		.read		= seq_read,
-		.llseek		= seq_lseek,
-		.release	= seq_release,
+	static const struct proc_ops proc_dump_usb_pipes_fops = {
+		.proc_open		= proc_dump_usb_pipes_open,
+		.proc_read		= seq_read,
+		.proc_lseek		= seq_lseek,
+		.proc_release	= seq_release,
 	};
 
 #else // Kernel older than 3.10
@@ -1156,7 +1156,7 @@ static int handle_vpipe_request( struct x10i_instance *instance, unsigned char c
 		#endif
 
 
-		retValue = (unsigned long)doXlineIoctl( file_ptr->f_dentry->d_inode, file_ptr, command, arg, 0);
+		retValue = (unsigned long)doXlineIoctl( file_inode(file_ptr), file_ptr, command, arg, 0);
 
 		#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,39)
 			mutex_unlock( &xline_mutex );
@@ -1177,7 +1177,7 @@ static int handle_vpipe_request( struct x10i_instance *instance, unsigned char c
 			lock_kernel( );
 		#endif
 
-		retValue = (unsigned long)doXlineIoctl( file_ptr->f_dentry->d_inode, file_ptr, command, arg, 1);
+		retValue = (unsigned long)doXlineIoctl( file_inode(file_ptr), file_ptr, command, arg, 1);
 
 		#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,39)
 			mutex_unlock( &xline_mutex );
@@ -1262,7 +1262,7 @@ static int doXlineIoctl( struct inode *inode_ptr, struct file *file_ptr, unsigne
 		}
 	}
 
-	if ( !access_ok( VERIFY_WRITE, X10Command, sizeof( X10_COMMAND ) ) )
+	if ( !access_ok( X10Command, sizeof( X10_COMMAND ) ) )
 	{
 		return( -EFAULT );
 	}
@@ -1442,7 +1442,7 @@ static int DoX10IO( struct driver_context *context, X10_COMMAND * KernelCommandC
 {
 	int CommandPipeIndex;
 	int ReturnValue = 0;
-	wait_queue_t wait;
+	wait_queue_entry_t wait;
 	int Length;
 	int retry_count;
 
@@ -1527,7 +1527,7 @@ static int DoX10IO( struct driver_context *context, X10_COMMAND * KernelCommandC
 static int DoX10Read( struct driver_context *context, X10_COMMAND * KernelCommandCopy )
 {
 	int ReturnValue = 0;
-	wait_queue_t wait;
+	wait_queue_entry_t wait;
 	int pipeNumber;
 
 	pipeNumber = KernelCommandCopy->AnswerpipeNum;
@@ -1571,7 +1571,7 @@ static int DoX10Read( struct driver_context *context, X10_COMMAND * KernelComman
 static int DoX10Write( struct driver_context *context, X10_COMMAND * KernelCommandCopy )
 {
 	int ReturnValue = 0;
-	wait_queue_t wait;
+	wait_queue_entry_t wait;
 	int pipeNumber;
 	int retry_count;
 

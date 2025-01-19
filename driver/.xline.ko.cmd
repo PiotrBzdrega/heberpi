@@ -1,0 +1,1 @@
+savedcmd_/usr/src/x10/driver/xline.ko := ld -r -EL  -maarch64elf -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T arch/arm64/module.lds -o /usr/src/x10/driver/xline.ko /usr/src/x10/driver/xline.o /usr/src/x10/driver/xline.mod.o;  true
